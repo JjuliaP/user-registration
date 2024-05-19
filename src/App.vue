@@ -5,7 +5,7 @@ import FooterComp from './components/FooterComp.vue'
 </script>
 
 <template>
-  <div class="container">
+  <div class="main-container">
     <HeaderComp></HeaderComp>
     <main class="body-container">
       <RouterView />
@@ -15,7 +15,7 @@ import FooterComp from './components/FooterComp.vue'
 </template>
 
 <style scoped lang="scss">
-.container {
+.main-container {
   min-height: 100vh;
   margin: 0;
   display: grid;

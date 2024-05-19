@@ -1,5 +1,5 @@
 <template>
-  <section class="user-registration-container">
+  <section class="container">
     <section v-if="userData.firstName">
       <img v-if="userData.avatar" :src="userData?.avatar" alt="avatar" class="user-avatar" />
       <h1 class="user-name">{{ userData.firstName }} {{ userData.lastName }}</h1>
@@ -60,34 +60,6 @@ userData.value = savedUserData
 
 <style lang="scss" scoped>
 @import '../assets/styles/grid-variables.scss';
-
-.user-registration-container {
-  padding: pxToRem(30px) pxToRem(50px);
-  border-radius: 30px;
-  display: flex;
-  margin: 0 auto;
-  flex-direction: column;
-  background: var(--white);
-  gap: pxToRem(20px);
-  display: flex;
-  justify-content: center;
-
-  @media screen and (min-width: map-get($grid-breakpoints, 'tablet')) {
-    & {
-      width: pxToRem(600px);
-    }
-  }
-  @media screen and (max-width: map-get($grid-breakpoints, 'tablet')) {
-    & {
-      width: pxToRem(400px);
-    }
-  }
-  @media screen and (max-width: map-get($grid-breakpoints, 'xs-tablet')) {
-    & {
-      width: auto;
-    }
-  }
-}
 .user-avatar {
   display: block;
   height: pxToRem(100px);

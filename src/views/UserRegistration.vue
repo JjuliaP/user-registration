@@ -1,5 +1,5 @@
 <template>
-  <section class="user-registration-container">
+  <section class="container">
     <h1 class="form-header">User Registration</h1>
 
     <form class="user-data-form" @submit.prevent="onCheckForm">
@@ -306,30 +306,6 @@ async function convertToBase64(blob: Blob): Promise<string> {
 }
 .required {
   color: var(--red);
-}
-.user-registration-container {
-  padding: pxToRem(30px) pxToRem(50px);
-  border-radius: 30px;
-  display: flex;
-  margin: 0 auto;
-  flex-direction: column;
-  background: var(--white);
-
-  @media screen and (min-width: map-get($grid-breakpoints, 'tablet')) {
-    & {
-      width: pxToRem(600px);
-    }
-  }
-  @media screen and (max-width: map-get($grid-breakpoints, 'tablet')) {
-    & {
-      width: pxToRem(400px);
-    }
-  }
-  @media screen and (max-width: map-get($grid-breakpoints, 'xs-tablet')) {
-    & {
-      width: auto;
-    }
-  }
 }
 .form-header {
   margin-bottom: pxToRem(30px);

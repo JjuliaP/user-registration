@@ -1,8 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import UserRegistration from '../views/UserRegistration.vue';
+import NotFound from '../views/NotFound.vue';
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory('/user-registration'),
   routes: [
     {
       path: '/',
@@ -13,7 +14,12 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: () => import('../views/UserProfile.vue')
-    }
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name:'NotFound',
+      component: NotFound,
+    },
   ]
 })
 
