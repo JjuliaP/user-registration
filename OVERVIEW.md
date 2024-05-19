@@ -86,13 +86,15 @@ Each page contains the following sections:
 
 - Displays when user tries to access a page that does not exist.
 
-- Contains a button to return to the previous page.
+- Contains a button to return to the main page.
 
 ## Additional Techniques & Tools Used
 
 - **Date Handling**: Utilized _moment.js_ library.
 
-- **Image Optimization**: User _browser-image-resizer_ for image optimization.
+- **Calendar**: Utilized _Vue Datepicker_ library.
+
+- **Image Optimization**: Used _browser-image-resizer_ for image optimization.
 
   - Further optimization might be done with a set of preview-mobile-desktop images and the help of the _srcset_ attribute
 
@@ -105,6 +107,12 @@ Each page contains the following sections:
 - **Code Formatting**: Utilized _prettier_ for code formatting.
 
 - **Documentation**: For documentation, tools like Storybook and Nextra were considered.
+
+- **Icons**: 
+
+    - Used service _https://logo.com/_ for logo and favicon creation
+
+    - Used service _https://www.svgrepo.com/_ for open-licensed SVG icons
 
 ## Deployment
 
