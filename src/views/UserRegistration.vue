@@ -1,5 +1,5 @@
 <template>
-  <main class="user-registration-container">
+  <section class="user-registration-container">
     <h1 class="form-header">User Registration</h1>
 
     <form class="user-data-form" @submit.prevent="onCheckForm">
@@ -145,7 +145,7 @@
 
       <div class="form-field avatar-field">
         <label for="avatar" class="button custom-file-upload">
-          Avatar
+          Upload an avatar
           <span class="required">*</span>
         </label>
 
@@ -159,11 +159,14 @@
         />
 
         <span v-if="fileName">{{ fileName }}</span>
+        <span class="error" v-if="errors.avatar">
+          {{ errors.avatar }}
+        </span>
       </div>
 
       <input type="submit" value="Submit" class="button submit-form" :disabled="!isSubmitButtonEnabled" />
     </form>
-  </main>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -171,6 +174,8 @@ import type { UserData } from '@/interfaces/user-data.interface'
 import type { Ref } from 'vue'
 import router from '@/router'
 import { computed, ref } from 'vue'
+import { readAndCompressImage } from 'browser-image-resizer'
+import { USERNAME_REGEX, USER_EMAIL_REGEX, USER_PHONE_REGEX } from '@/const/user.const'
 
 const userData: Ref<UserData> = ref({
   firstName: '',
@@ -184,11 +189,9 @@ const userData: Ref<UserData> = ref({
 const fileName: Ref<string> = ref('')
 const errors: Ref<{ [key: string]: any }> = ref({})
 
-const nameRegexp = /^[a-z][a-z\-]*/i
-const phoneRegexp = /^[1-9]{1}[0-9]{8}$/i
-const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/i
 const nameMaxLength = 200
 const nameMinLength = 2
+const avatarFileSizeBytes = 1024 * 1000 * 5
 
 const isSubmitButtonEnabled = computed(() => {
   return Object.values(userData.value).every((value) => !!value)
@@ -199,23 +202,32 @@ function onCheckForm(): void {
   router.push('/profile')
 }
 
-function onUserAvatarChange($event: Event): void {
+async function onUserAvatarChange($event: Event): Promise<void> {
   const target = $event.target as HTMLInputElement
   if (target && target.files) {
     const file = target.files[0]
-    fileName.value = file.name
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      userData.value.avatar = reader.result as string
+    if (file.size > avatarFileSizeBytes) {
+      errors.value['avatar'] = 'Max file size allowed: 5MB'
+      target.value = ''
+      userData.value.avatar = ''
+      fileName.value = ''
+      return
     }
-    reader.readAsDataURL(file)
+    if (errors.value['avatar']) {
+      delete errors.value['avatar']
+    }
+    fileName.value = file.name
+
+    const convertedImage = await readAndCompressImage(file, { maxWidth: 100, maxHeight: 100, quality: 0.8 })
+    let convertedImageBase64 = await convertToBase64(convertedImage)
+    userData.value.avatar = convertedImageBase64
   }
 }
 
 function validateEmail(): void {
   if (!userData.value.email.length) {
     errors.value['email'] = ''
-  } else if (!emailRegexp.test(userData.value.email)) {
+  } else if (!USER_EMAIL_REGEX.test(userData.value.email)) {
     errors.value['email'] = 'Invalid email address'
   } else {
     errors.value['email'] = ''
@@ -223,7 +235,7 @@ function validateEmail(): void {
 }
 
 function validatePhoneNumber(): void {
-  if (userData.value.phoneNumber.length === 0 || phoneRegexp.test(userData.value.phoneNumber.toString())) {
+  if (userData.value.phoneNumber.length === 0 || USER_PHONE_REGEX.test(userData.value.phoneNumber.toString())) {
     errors.value['phoneNumber'] = ''
   } else {
     errors.value['phoneNumber'] = 'Invalid phone number'
@@ -233,7 +245,7 @@ function validatePhoneNumber(): void {
 function validateName(name: string, propertyName: string): void {
   if (name.length === 0) {
     errors.value[propertyName] = ''
-  } else if (!nameRegexp.test(name)) {
+  } else if (!USERNAME_REGEX.test(name)) {
     errors.value[propertyName] = 'Invalid name'
   } else if (name.length > nameMaxLength) {
     errors.value[propertyName] = `The length must be ${nameMaxLength} characters or fewer`
@@ -243,19 +255,21 @@ function validateName(name: string, propertyName: string): void {
     errors.value[propertyName] = ''
   }
 }
+
+async function convertToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve) => {
+    var reader = new FileReader()
+    reader.onload = function () {
+      resolve(reader.result as string)
+    }
+    reader.readAsDataURL(blob)
+  })
+}
 </script>
 
 <style lang="scss" scoped>
-@media screen and (min-width: 700px) {
-  .user-registration-container {
-    width: pxToRem(600px);
-  }
-}
-@media screen and (max-width: 699px) {
-  .user-registration-container {
-    width: pxToRem(400px);
-  }
-}
+@import '../assets/styles/grid-variables.scss';
+
 .form-field {
   display: flex;
   flex-direction: column;
@@ -273,7 +287,7 @@ function validateName(name: string, propertyName: string): void {
 
     &:focus {
       background-position-x: pxToRem(9px);
-      border: 1px solid var(--primary-color);
+      border-bottom: 1px solid var(--primary-color);
     }
   }
 
@@ -295,11 +309,27 @@ function validateName(name: string, propertyName: string): void {
 }
 .user-registration-container {
   padding: pxToRem(30px) pxToRem(50px);
-  border-radius: 15px;
+  border-radius: 30px;
   display: flex;
   margin: 0 auto;
   flex-direction: column;
   background: var(--white);
+
+  @media screen and (min-width: map-get($grid-breakpoints, 'tablet')) {
+    & {
+      width: pxToRem(600px);
+    }
+  }
+  @media screen and (max-width: map-get($grid-breakpoints, 'tablet')) {
+    & {
+      width: pxToRem(400px);
+    }
+  }
+  @media screen and (max-width: map-get($grid-breakpoints, 'xs-tablet')) {
+    & {
+      width: auto;
+    }
+  }
 }
 .form-header {
   margin-bottom: pxToRem(30px);
@@ -360,6 +390,10 @@ function validateName(name: string, propertyName: string): void {
   height: pxToRem(230px);
   border-top: 21px solid transparent;
   padding-top: 0;
+
+  &:focus {
+    border-bottom: 1px solid var(--primary-color);
+  }
 }
 
 /* Remove input type date placeholder */
@@ -395,7 +429,6 @@ input[type='file'] {
 .button {
   background: var(--primary-color);
   padding: pxToRem(10px) pxToRem(20px);
-  width: pxToRem(100px);
   border-radius: 10px;
   cursor: pointer;
   border: none;

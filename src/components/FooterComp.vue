@@ -27,27 +27,29 @@
 <script setup lang="ts"></script>
 
 <style lang="scss" scoped>
-@media screen and (min-width: 700px) {
+@import '../assets/styles/grid-variables.scss';
+
+@media screen and (min-width: map-get($grid-breakpoints, 'xs-tablet')) {
   footer {
-    padding-left: 50px;
-    padding-right: 50px;
+    padding-left: pxToRem(50px);
+    padding-right: pxToRem(50px);
   }
 
   .contacts-section {
     flex-direction: row;
-    gap: 20px;
+    gap: pxToRem(20px);
   }
 }
 
-@media screen and (max-width: 699px) {
+@media screen and (max-width: map-get($grid-breakpoints, 'xs-tablet')) {
   footer {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: pxToRem(10px);
+    padding-right: pxToRem(10px);
   }
 
   .contacts-section {
     flex-direction: column;
-    gap: 0px;
+    gap: 0;
   }
 }
 
@@ -55,13 +57,13 @@ footer {
   color: var(--black);
   overflow: hidden;
   background-color: var(--white);
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: pxToRem(10px);
+  padding-bottom: pxToRem(10px);
   display: flex;
   justify-content: space-between;
 
   .logo {
-    height: 100px;
+    height: pxToRem(100px);
   }
 }
 
@@ -70,8 +72,8 @@ footer {
   align-items: center;
 
   img {
-    height: 30px;
-    width: 30px;
+    height: pxToRem(30px);
+    width: pxToRem(30px);
     cursor: pointer;
   }
 }
@@ -81,7 +83,7 @@ footer {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 10px;
+  gap: pxToRem(10px);
 
   h4 {
     font-weight: 600;
@@ -89,7 +91,7 @@ footer {
 
   a {
     color: var(--black);
-    font-size: 12px;
+    font-size: pxToRem(12px);
     text-align: center;
     text-decoration: none;
 
