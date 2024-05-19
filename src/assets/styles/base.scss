@@ -1,0 +1,42 @@
+$base-font: 16px;
+
+@use 'sass:math';
+
+@function pxToRem($pxValue) {
+    @return math.div($pxValue, $base-font) * 1rem; 
+}
+
+@mixin base-font {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-size: $base-font;
+  font-style: normal;
+  line-height: normal;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+body {
+  @include base-font;
+  min-height: 100vh;
+  background: var(--white);
+  transition:
+    color 0.5s,
+    background-color 0.5s;
+  line-height: 1.6;
+  font-family: sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+}
+
+:deep(.dp__theme_light) {
+  --dp-primary-color: var(--primary-color);
+}
